@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -34,6 +35,8 @@ public class ChatActivity extends AppCompatActivity {
 
     private RecyclerView messageadapter;
     private CircleImageView profile_image_chat;
+
+    private ArrayList<MessageModal> messageModalArrayList;
     private TextView reciever_name;
 
     private CardView cardView;
@@ -69,16 +72,34 @@ public class ChatActivity extends AppCompatActivity {
 
         reciever_name=findViewById(R.id.reciever_name);
         reciever_name.setText(Recievername);
+        messageModalArrayList=new ArrayList<>();
+
+        senderUID=auth.getUid();
+
+        senderROOM=senderUID+RecieverUID;
+        recieverROOM=RecieverUID+senderUID;
 
         database=FirebaseDatabase.getInstance();
         auth=FirebaseAuth.getInstance();
 
         DatabaseReference reference=database.getReference().child("users").child(auth.getUid());
 
-        senderUID=auth.getUid();
+        DatabaseReference chatreference=database.getReference().child("chats").child(senderROOM).child("messages");
 
-        senderROOM=senderUID+RecieverUID;
-        recieverROOM=RecieverUID+senderUID;
+chatreference.addValueEventListener(new ValueEventListener() {
+    @Override
+    public void onDataChange(@NonNull DataSnapshot snapshot) {
+        for(DataSnapshot dataSnapshot:snapshot.getChildren()){
+            MessageModal messageModal=dataSnapshot.getValue(MessageModal.class);
+messageModalArrayList.add(messageModal);
+        }
+    }
+
+    @Override
+    public void onCancelled(@NonNull DatabaseError error) {
+
+    }
+});
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
