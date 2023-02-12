@@ -12,7 +12,7 @@
         android:theme="@style/Theme.WhatsApp"
         tools:targetApi="31">
         <activity
-            android:name=".SettingActivity"
+            android:name=".activity.SettingActivity"
             android:exported="false" />
         <activity
             android:name=".activity.LoginActivity"

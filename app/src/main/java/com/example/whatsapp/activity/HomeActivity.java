@@ -64,7 +64,7 @@ public class HomeActivity extends AppCompatActivity {
         settingbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+startActivity(new Intent(HomeActivity.this,SettingActivity.class));
             }
         });
 
