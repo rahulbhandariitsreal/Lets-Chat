@@ -54,7 +54,7 @@ public class RegistrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-        profile_image_register=findViewById(R.id.profile_image_register);
+        profile_image_register=findViewById(R.id.profile_image_reciever);
         ET_username_register=findViewById(R.id.ET_username_register);
         ETemail_register=findViewById(R.id.ETemail_register);
         ETpass_register=findViewById(R.id.ETpass_register);

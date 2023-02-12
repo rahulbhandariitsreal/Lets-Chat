@@ -3,6 +3,7 @@ package com.example.whatsapp.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.whatsapp.R;
+import com.example.whatsapp.adapter.MessageAdapter;
 import com.example.whatsapp.modal.MessageModal;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -45,8 +47,10 @@ public class ChatActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private FirebaseAuth auth;
 
-    private static  String senderImageURI;
-    private static  String recieverImageURI;
+    public static  String senderImageURI;
+    public static  String recieverImageURI;
+
+    private MessageAdapter myadapter;
 
     private String senderUID;
 
@@ -61,22 +65,23 @@ public class ChatActivity extends AppCompatActivity {
         EDTmessage=findViewById(R.id.EDTmessage);
 
         messageadapter=findViewById(R.id.messageadapter);
-
+auth=FirebaseAuth.getInstance();
 
         Recievername=getIntent().getStringExtra("name");
         RecieverImage=getIntent().getStringExtra("ReciecerImage");
         RecieverUID=getIntent().getStringExtra("uid");
 
         profile_image_chat=findViewById(R.id.profile_image_chat);
-        Picasso.get().load(RecieverUID).into(profile_image_chat);
+        Picasso.get().load(RecieverImage).into(profile_image_chat);
 
         reciever_name=findViewById(R.id.reciever_name);
-        reciever_name.setText(Recievername);
+        reciever_name.setText(""+Recievername);
         messageModalArrayList=new ArrayList<>();
 
         senderUID=auth.getUid();
 
         senderROOM=senderUID+RecieverUID;
+
         recieverROOM=RecieverUID+senderUID;
 
         database=FirebaseDatabase.getInstance();
@@ -85,14 +90,22 @@ public class ChatActivity extends AppCompatActivity {
         DatabaseReference reference=database.getReference().child("users").child(auth.getUid());
 
         DatabaseReference chatreference=database.getReference().child("chats").child(senderROOM).child("messages");
+myadapter=new MessageAdapter(this,messageModalArrayList);
+LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
+linearLayoutManager.setStackFromEnd(true);
+messageadapter.setLayoutManager(linearLayoutManager);
+messageadapter.setAdapter(myadapter);
 
 chatreference.addValueEventListener(new ValueEventListener() {
     @Override
     public void onDataChange(@NonNull DataSnapshot snapshot) {
+        messageModalArrayList.clear();
+
         for(DataSnapshot dataSnapshot:snapshot.getChildren()){
             MessageModal messageModal=dataSnapshot.getValue(MessageModal.class);
 messageModalArrayList.add(messageModal);
         }
+        myadapter.notifyDataSetChanged();
     }
 
     @Override
@@ -128,7 +141,7 @@ EDTmessage.setText("");
                 MessageModal messageModal=new MessageModal(message,senderUID,date.getTime());
 
                 database.getReference().child("chats").child(senderROOM)
-                        .child("messages").setValue(message).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        .child("messages").push().setValue(messageModal).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
 

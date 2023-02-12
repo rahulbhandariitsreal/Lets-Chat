@@ -21,6 +21,9 @@
             android:name=".activity.HomeActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.ChatActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
