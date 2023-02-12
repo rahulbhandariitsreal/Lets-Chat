@@ -32,6 +32,8 @@ public class HomeActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private RecyclerView mainUserRecyclerView;
 
+    private ImageView settingbtn;
+
     private UserAdapter userAdapter;
     private ImageView imgLogout;
 
@@ -44,34 +46,41 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-auth=FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance();
+
+        settingbtn=findViewById(R.id.settingbtn);
 
 
-imgLogout=findViewById(R.id.imglogOut);
+        imgLogout = findViewById(R.id.imglogOut);
 
 
+        imgLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createdialogue();
+            }
+        });
+
+        settingbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
 
-imgLogout.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        createdialogue();
-    }
-});
-
-
-
-usersArraylist=new ArrayList<>();
-userAdapter=new UserAdapter(HomeActivity.this,usersArraylist);
-database=FirebaseDatabase.getInstance();
-        DatabaseReference reference=database.getReference().child("users");
+        usersArraylist = new ArrayList<>();
+        userAdapter = new UserAdapter(HomeActivity.this, usersArraylist);
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference().child("users");
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot dataSnapshot:snapshot.getChildren()){
-                    User user=dataSnapshot.getValue(User.class);
-                    usersArraylist.add(user);
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    User user = dataSnapshot.getValue(User.class);
+                    if (!user.getUid().equals(auth.getCurrentUser().getUid()))
+                        usersArraylist.add(user);
                 }
                 userAdapter.notifyDataSetChanged();
             }
@@ -83,28 +92,27 @@ database=FirebaseDatabase.getInstance();
         });
 
 
-
-        mainUserRecyclerView=findViewById(R.id.mainUserRecyclerView);
+        mainUserRecyclerView = findViewById(R.id.mainUserRecyclerView);
         mainUserRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mainUserRecyclerView.setAdapter(userAdapter);
 
-        if(auth.getCurrentUser()==null){
+        if (auth.getCurrentUser() == null) {
             startActivity(new Intent(HomeActivity.this, LoginActivity.class));
         }
     }
 
-    public void createdialogue(){
-        Dialog dialog=new Dialog(this,R.style.Dialogue);
+    public void createdialogue() {
+        Dialog dialog = new Dialog(this, R.style.Dialogue);
         dialog.setContentView(R.layout.dialogue_item);
-        TextView yesbtn,nobtn;
-        yesbtn=dialog.findViewById(R.id.yes_logout);
-        nobtn=dialog.findViewById(R.id.no_logout);
+        TextView yesbtn, nobtn;
+        yesbtn = dialog.findViewById(R.id.yes_logout);
+        nobtn = dialog.findViewById(R.id.no_logout);
 
         yesbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-auth.signOut();
-startActivity(new Intent(HomeActivity.this,LoginActivity.class));
+                auth.signOut();
+                startActivity(new Intent(HomeActivity.this, LoginActivity.class));
 
             }
 

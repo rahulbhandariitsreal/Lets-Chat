@@ -40,11 +40,10 @@ public class UserAdapter extends RecyclerView.Adapter <UserAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull UserAdapter.ViewHolder holder, int position) {
 User newuser=usersArraylist.get(position);
-if(!newuser.getUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
     holder.username.setText(newuser.getName());
     holder.userstatus.setText(newuser.getStatus());
     Picasso.get().load(newuser.getImageURI()).into(holder.userprofile);
-}
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
