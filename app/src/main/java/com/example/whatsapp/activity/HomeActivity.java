@@ -102,6 +102,8 @@ startActivity(new Intent(HomeActivity.this,SettingActivity.class));
     }
 
     public void createdialogue() {
+
+
         Dialog dialog = new Dialog(this, R.style.Dialogue);
         dialog.setContentView(R.layout.dialogue_item);
         TextView yesbtn, nobtn;

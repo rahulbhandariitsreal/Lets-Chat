@@ -7,6 +7,10 @@ android {
     namespace 'com.example.whatsapp'
     compileSdk 33
 
+    buildFeatures{
+        dataBinding true;
+    }
+
     defaultConfig {
         applicationId "com.example.whatsapp"
         minSdk 26
@@ -49,4 +53,5 @@ dependencies {
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.squareup.picasso:picasso:2.8'
+
 }

@@ -104,6 +104,7 @@ chatreference.addValueEventListener(new ValueEventListener() {
         for(DataSnapshot dataSnapshot:snapshot.getChildren()){
             MessageModal messageModal=dataSnapshot.getValue(MessageModal.class);
 messageModalArrayList.add(messageModal);
+
         }
         myadapter.notifyDataSetChanged();
     }
@@ -118,8 +119,7 @@ messageModalArrayList.add(messageModal);
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                senderImageURI= snapshot.child("imageURI").getValue().toString();
-recieverImageURI=RecieverImage;
-
+               recieverImageURI=RecieverImage;
             }
 
             @Override
@@ -131,13 +131,16 @@ recieverImageURI=RecieverImage;
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String message=EDTmessage.getText().toString();
 if(message.isEmpty()){
+
     Toast.makeText(ChatActivity.this, "Please enter valid message", Toast.LENGTH_SHORT).show();
     return;
 }
 EDTmessage.setText("");
                 Date date=new Date();
+
                 MessageModal messageModal=new MessageModal(message,senderUID,date.getTime());
 
                 database.getReference().child("chats").child(senderROOM)
